@@ -7,7 +7,7 @@ const {
 const { mailtrapClient, sender } = require("./mailtrap.config");
 
 // Send verification email
-exports.senderVerificationEmail = async (email, verificationToken) => {
+exports.sendVerificationEmail = async (email, verificationToken) => {
   const recipient = [{ email }];
   try {
     await mailtrapClient.send({
@@ -33,7 +33,7 @@ exports.senderVerificationEmail = async (email, verificationToken) => {
 };
 
 // Send welcome email after successful verification
-exports.senderWelcomeEmail = async (email, name) => {
+exports.sendWelcomeEmail = async (email, name) => {
   const recipient = [{ email }];
   try {
     await mailtrapClient.send({
@@ -56,7 +56,7 @@ exports.senderWelcomeEmail = async (email, name) => {
 };
 
 // Send password reset email
-exports.senderPasswordResetEmail = async (email, resetURL) => {
+exports.sendPasswordResetEmail = async (email, resetURL) => {
   const recipient = [{ email }];
   try {
     await mailtrapClient.send({
