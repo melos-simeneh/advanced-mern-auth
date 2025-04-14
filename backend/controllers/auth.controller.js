@@ -35,14 +35,14 @@ exports.signup = async (req, res) => {
 
     const token = generateTokenAndSetCookie(res, user._id);
 
-    // await senderVerificationEmail(user.email, verificationCode);
+    await senderVerificationEmail(user.email, verificationCode);
 
     res.status(201).json({
       success: true,
       message: "User created successfully",
       token,
       user: {
-        ...user.toJSON(),
+        ...user._doc,
         password: undefined,
       },
     });
@@ -77,7 +77,7 @@ exports.verifyEmail = async (req, res) => {
       success: true,
       message: "Email verified successfully",
       user: {
-        ...user.toJSON(),
+        ...user._doc,
         password: undefined,
       },
     });
@@ -89,5 +89,43 @@ exports.verifyEmail = async (req, res) => {
     });
   }
 };
-exports.login = async (req, res) => {};
-exports.logout = async (req, res) => {};
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+
+    const isPasswordValid = await bcryptjs.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+    generateTokenAndSetCookie(res, user._id);
+    user.lastLogin = Date.now();
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Logged in successfully",
+      user: {
+        ...user._doc,
+        password: undefined,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+      stack: error.stack,
+    });
+  }
+};
+exports.logout = async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ success: true, message: "Logged out successfully" });
+};
