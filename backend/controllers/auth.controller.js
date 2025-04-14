@@ -6,10 +6,10 @@ const {
   generateTokenAndSetCookie,
 } = require("../utils/token");
 const {
-  senderVerificationEmail,
-  senderWelcomeEmail,
-  senderPasswordResetEmail,
+  sendPasswordResetEmail,
   sendResetSuccessEmail,
+  sendVerificationEmail,
+  sendWelcomeEmail,
 } = require("../mailtrap/emails");
 
 exports.signup = async (req, res) => {
@@ -38,7 +38,7 @@ exports.signup = async (req, res) => {
 
     const token = generateTokenAndSetCookie(res, user._id);
 
-    await senderVerificationEmail(user.email, verificationCode);
+    await sendVerificationEmail(user.email, verificationCode);
 
     res.status(201).json({
       success: true,
@@ -50,6 +50,7 @@ exports.signup = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
@@ -78,7 +79,7 @@ exports.verifyEmail = async (req, res) => {
     user.verificationTokenExpiresAt = null;
     await user.save();
 
-    await senderWelcomeEmail(user.email, user.name);
+    await sendWelcomeEmail(user.email, user.name);
 
     res.status(200).json({
       success: true,
@@ -155,7 +156,7 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordExpiresAt = resetTokenExpiresAt;
     await user.save();
 
-    await senderPasswordResetEmail(
+    await sendPasswordResetEmail(
       email,
       `${process.env.CLIENT_URL}/reset-password/${resetToken}`
     );
