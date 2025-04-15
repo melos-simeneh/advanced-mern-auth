@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { timestamp } = require("../utils/date");
 
 const MAX_RETRIES = 5;
 const INITIAL_RETRY_DELAY = 1000;
@@ -19,22 +20,12 @@ const mongoDBConnection = async (retries = 0) => {
       connectTimeoutMS: 30000,
     });
 
-    console.log("✅ MongoDB connected successfully");
-
-    mongoose.connection.on("connected", () => {
-      console.log("Mongoose connected to DB");
-    });
-
-    mongoose.connection.on("error", (err) => {
-      console.error("Mongoose connection error:", err);
-    });
-
-    mongoose.connection.on("disconnected", () => {
-      console.warn("Mongoose disconnected from DB");
-    });
+    console.log(`[${timestamp()}][Info] ✅ MongoDB connected successfully`);
   } catch (err) {
     console.error(
-      `❌ DB connection failed (attempt ${retries + 1}/${MAX_RETRIES}):`,
+      `[${timestamp()}][Error] ❌ DB connection failed (attempt ${
+        retries + 1
+      }/${MAX_RETRIES}):`,
       err.message
     );
 
@@ -49,7 +40,7 @@ const mongoDBConnection = async (retries = 0) => {
       return mongoDBConnection(retries + 1);
     } else {
       console.error(
-        "💥 Max connection retries reached. Application will exit."
+        `[${timestamp()}][Error] 💥 Max connection retries reached. Application will exit.`
       );
       process.exit(1);
     }
@@ -58,7 +49,9 @@ const mongoDBConnection = async (retries = 0) => {
 
 process.on("SIGINT", async () => {
   await mongoose.connection.close();
-  console.log("Mongoose connection closed due to application termination");
+  console.log(
+    `[${timestamp()}]Mongoose connection closed due to application termination`
+  );
   process.exit(0);
 });
 

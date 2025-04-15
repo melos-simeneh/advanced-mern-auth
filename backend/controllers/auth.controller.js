@@ -11,6 +11,7 @@ const {
   sendVerificationEmail,
   sendWelcomeEmail,
 } = require("../mailtrap/emails");
+const { timestamp } = require("../utils/date");
 
 exports.signup = async (req, res) => {
   const { email, password, name } = req.body;
@@ -40,6 +41,10 @@ exports.signup = async (req, res) => {
 
     await sendVerificationEmail(user.email, verificationCode);
 
+    console.log(
+      `[${timestamp()}][Info] ✅ User created successfully: ${user.email}`
+    );
+
     res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -50,7 +55,11 @@ exports.signup = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
+    console.error(
+      `[${timestamp()}][Error] ❌ Failed to create user (${email}): ${
+        error.message
+      }`
+    );
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
@@ -80,6 +89,9 @@ exports.verifyEmail = async (req, res) => {
     await user.save();
 
     await sendWelcomeEmail(user.email, user.name);
+    console.log(
+      `[${timestamp()}][Info] ✅ ${email} User verified successfully}`
+    );
 
     res.status(200).json({
       success: true,
@@ -90,6 +102,11 @@ exports.verifyEmail = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error(
+      `[${timestamp()}][Error] ❌ Failed to verify email (${email}): ${
+        error.message
+      }`
+    );
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
@@ -104,6 +121,10 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.warn(
+        `[${timestamp()}][Warning] Failed login attempt - user not found for email: ${email}, ` +
+          `IP: ${req.ip}, User-Agent: ${req.get("User-Agent")}`
+      );
       return res
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
@@ -111,6 +132,10 @@ exports.login = async (req, res) => {
 
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!isPasswordValid) {
+      console.info(
+        `[${timestamp()}][Warning] Failed login attempt - invalid password for email: ${email}, ` +
+          `IP: ${req.ip}, User-Agent: ${req.get("User-Agent")}`
+      );
       return res
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
@@ -118,6 +143,9 @@ exports.login = async (req, res) => {
     generateTokenAndSetCookie(res, user._id);
     user.lastLogin = Date.now();
     await user.save();
+
+    console.log(`[${timestamp()}][Info] ${email} User successfully logged in`);
+
     res.status(200).json({
       success: true,
       message: "Logged in successfully",
@@ -127,6 +155,11 @@ exports.login = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error(
+      `[${timestamp()}][Error] ❌ Failed login attempt for email: ${email} - ${
+        error.message
+      }`
+    );
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
@@ -137,6 +170,7 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
   res.clearCookie("token");
+  console.log(`[${timestamp()}][Info] ✅ User successfully logged out`);
   res.status(200).json({ success: true, message: "Logged out successfully" });
 };
 
@@ -145,6 +179,9 @@ exports.forgotPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
+      console.info(
+        `[${timestamp()}][Warning] User not found with email: ${email}`
+      );
       return res
         .status(400)
         .json({ success: false, message: "User not found" });
@@ -161,14 +198,22 @@ exports.forgotPassword = async (req, res) => {
       `${process.env.CLIENT_URL}/reset-password/${resetToken}`
     );
 
+    console.log(
+      `[${timestamp()}] 🔑 Password reset token generated for email: ${email}`
+    );
+
     res.status(200).json({
       success: true,
       message: "Password reset link sent to your email",
     });
   } catch (error) {
+    console.error(
+      `[${timestamp()}][Error] ❌ Failed to process password reset for ${email}: ${
+        error.message
+      }`
+    );
     res.status(500).json({
       status: false,
-
       message: "Internal Server Error",
       stack: error.stack,
     });
@@ -185,6 +230,10 @@ exports.resetPassword = async (req, res) => {
       resetPasswordExpiresAt: { $gt: Date.now() },
     });
     if (!user) {
+      console.info(
+        `[${timestamp()}][Warning] Invalid or expired reset token for email: ${email}`
+      );
+
       return res
         .status(400)
         .json({ success: false, message: "Invalid or expired reset token" });
@@ -198,12 +247,19 @@ exports.resetPassword = async (req, res) => {
     await user.save();
 
     await sendResetSuccessEmail(email);
-
+    console.log(
+      `[${timestamp()}] 🔒 Password successfully reset for email: ${user.email}`
+    );
     res.status(200).json({
       success: true,
       message: "Password reset successfully",
     });
   } catch (error) {
+    console.error(
+      `[${timestamp()}] [Error]: Failed to reset password for user: ${email}: ${
+        error.message
+      }`
+    );
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
@@ -217,11 +273,18 @@ exports.checkAuth = async (req, res) => {
     const user = await User.findById(req.userId).select("-password");
 
     if (!user) {
+      console.info(
+        `[${timestamp()}][Warning] User not found with userId: ${req.userId}`
+      );
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
+
+    console.log(
+      `[${timestamp()}] [Info] ✅ User ${user.email} successfully authenticated`
+    );
 
     return res.status(200).json({
       success: true,
@@ -229,6 +292,12 @@ exports.checkAuth = async (req, res) => {
       user: user,
     });
   } catch (error) {
+    console.error(
+      `[${timestamp()}] [Error]: Failed to authenticate user with userId: ${
+        req.userId
+      }. Error: ${error.message}`
+    );
+
     res.status(500).json({
       status: false,
       message: "Internal Server Error",

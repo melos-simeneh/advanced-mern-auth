@@ -1,3 +1,4 @@
+const { timestamp } = require("../utils/date");
 const {
   VERIFICATION_EMAIL_TEMPLATE,
   WELCOME_EMAIL_TEMPLATE,
@@ -21,10 +22,12 @@ exports.sendVerificationEmail = async (email, verificationToken) => {
       ),
       category: "Email Verification",
     });
-    console.log(`✅ Verification email sent to ${email}`);
+    console.log(
+      `[${timestamp()}][Info] ✅ Verification email sent to ${email}`
+    );
   } catch (error) {
     console.error(
-      `❌ Failed to send verification email to ${email}:`,
+      `[${timestamp()}][Error] ❌ Failed to send verification email to ${email}:`,
       error.message
     );
     throw new Error(
@@ -46,10 +49,10 @@ exports.sendWelcomeEmail = async (email, name) => {
         .replace("{supportUrl}", "https://melos-simeneh.vercel.app/"),
       category: "Welcome Email",
     });
-    console.log(`🎉 Welcome email sent to ${email}`);
+    console.log(`[${timestamp()}] 🎉 Welcome email sent to ${email}`);
   } catch (error) {
     console.error(
-      `❌ Failed to send welcome email to ${email}:`,
+      `[${timestamp()}][Error] ❌ Failed to send welcome email to ${email}:`,
       error.message
     );
     throw new Error("Unable to send welcome email. Please try again later.");
@@ -67,10 +70,10 @@ exports.sendPasswordResetEmail = async (email, resetURL) => {
       html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL),
       category: "Password Reset",
     });
-    console.log(`🔐 Password reset email sent to ${email}`);
+    console.log(`[${timestamp()}] 🔐 Password reset email sent to ${email}`);
   } catch (error) {
     console.error(
-      `❌ Failed to send password reset email to ${email}:`,
+      `[${timestamp()}][Error] ❌ Failed to send password reset email to ${email}:`,
       error.message
     );
     throw new Error(
@@ -89,10 +92,12 @@ exports.sendResetSuccessEmail = async (email) => {
       html: PASSWORD_RESET_SUCCESS_TEMPLATE,
       category: "Password Reset",
     });
-    console.log(`✅ Password reset confirmation email sent to ${email}`);
+    console.log(
+      `[${timestamp()}][Info] ✅ Password reset confirmation email sent to ${email}`
+    );
   } catch (error) {
     console.error(
-      `❌ Failed to send password reset confirmation email to ${email}:`,
+      `[${timestamp()}][Error] ❌ Failed to send password reset confirmation email to ${email}:`,
       error.message
     );
     throw new Error(

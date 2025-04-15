@@ -5,6 +5,7 @@ const checkEnv = require("./utils/checkEnv");
 const mongoDBConnection = require("./config/db");
 const authRoutes = require("./routes/auth.routes");
 const cookieParser = require("cookie-parser");
+const { timestamp } = require("./utils/date");
 
 const app = express();
 
@@ -20,5 +21,5 @@ app.use("/api/auth", authRoutes);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   const PORT = process.env.PORT;
-  console.log("Server is running on port:", PORT);
+  console.log(`[${timestamp()}] Server is running on port:`, PORT);
 });
