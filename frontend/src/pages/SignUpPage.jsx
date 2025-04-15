@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { useAuthStore } from "../store/authStore";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
@@ -16,6 +17,21 @@ const SignUpPage = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    const fullNamePattern = /^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/;
+    if (!fullNamePattern.test(name.trim())) {
+      toast.error("Please enter your full name (first and last).");
+      return;
+    }
+    const strongPasswordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+
+    if (!strongPasswordPattern.test(password)) {
+      toast.error(
+        "Password must be at least 6 characters and include uppercase, lowercase, number, and special character."
+      );
+      return;
+    }
 
     try {
       await signup(email, password, name);
