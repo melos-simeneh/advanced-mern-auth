@@ -8,6 +8,7 @@ import { useAuthStore } from "../store/authStore";
 import toast from "react-hot-toast";
 
 const SignUpPage = () => {
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +18,7 @@ const SignUpPage = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setHasSubmitted(true);
 
     const fullNamePattern = /^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/;
     if (!fullNamePattern.test(name.trim())) {
@@ -76,7 +78,10 @@ const SignUpPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
+          {hasSubmitted && error && (
+            <p className="text-red-500 font-semibold mt-2">{error}</p>
+          )}
+
           <PasswordStrengthMeter password={password} />
 
           <motion.button

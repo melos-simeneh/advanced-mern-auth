@@ -9,7 +9,7 @@ const EmailVerificationPage = () => {
   const stateEmail = location.state?.email;
   const localEmail = localStorage.getItem("mernAuthPendingVerificationEmail");
   const email = stateEmail || localEmail;
-
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -50,6 +50,7 @@ const EmailVerificationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setHasSubmitted(true);
     const verificationCode = code.join("");
     try {
       await verifyEmail(email, verificationCode);
@@ -101,7 +102,9 @@ const EmailVerificationPage = () => {
               />
             ))}
           </div>
-          {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
+          {hasSubmitted && error && (
+            <p className="text-red-500 font-semibold mt-2">{error}</p>
+          )}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
