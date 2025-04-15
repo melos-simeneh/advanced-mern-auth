@@ -72,8 +72,7 @@ const ForgotPasswordPage = () => {
               receive a password reset link shortly.
               <span className="block mt-2 text-sm text-gray-400">
                 Don’t forget to check your{" "}
-                <span className="font-semibold text-white">spam</span> or{" "}
-                <span className="font-semibold text-white">junk</span> folder
+                <span className="font-semibold text-white">spam</span> folder
                 just in case.
               </span>
             </p>
