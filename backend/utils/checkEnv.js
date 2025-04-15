@@ -1,4 +1,13 @@
-const requiredEnvVars = ["PORT", "MONGO_DB_URL"];
+const requiredEnvVars = [
+  "PORT",
+  "MONGO_DB_URL",
+  "NODE_ENV",
+  "JWT_SECRET",
+  "EMAIL_USERNAME",
+  "EMAIL_PASSWORD",
+  "EMAIL_FROM_NAME",
+  "CLIENT_URL",
+];
 
 /**
  * Function to check and validate environment variables.
