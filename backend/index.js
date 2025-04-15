@@ -31,5 +31,9 @@ if (process.env.NODE_ENV === "production") {
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   const PORT = process.env.PORT;
-  console.log(`[${timestamp()}] Server is running on port:`, PORT);
+  console.log(
+    `[${timestamp()}] Server is running in ${
+      process.env.NODE_ENV
+    } mode on port ${PORT}`
+  );
 });
