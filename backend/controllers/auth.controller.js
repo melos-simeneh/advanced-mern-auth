@@ -10,7 +10,7 @@ const {
   sendResetSuccessEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
-} = require("../mailtrap/emails");
+} = require("../nodemailer/mailer.service");
 const { timestamp } = require("../utils/date");
 
 exports.signup = async (req, res) => {
