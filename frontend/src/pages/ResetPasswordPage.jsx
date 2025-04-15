@@ -17,13 +17,23 @@ const ResetPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
+    const strongPasswordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+
+    if (!strongPasswordPattern.test(password)) {
+      toast.error(
+        "Password must be at least 6 characters and include uppercase, lowercase, number, and special character."
+      );
       return;
     }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     try {
       await resetPassword(token, password);
-
       toast.success(
         "Password reset successfully, redirecting to login page..."
       );
@@ -35,7 +45,6 @@ const ResetPasswordPage = () => {
       toast.error(error.message || "Error resetting password");
     }
   };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
