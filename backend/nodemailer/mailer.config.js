@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 
 const sender = {
   email: process.env.EMAIL_USERNAME,
-  name: process.env.SMTP_FROM_NAME,
+  name: process.env.EMAIL_FROM_NAME,
 };
 
 module.exports = { transporter, sender };
