@@ -63,15 +63,15 @@ exports.signup = async (req, res) => {
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
-      stack: error.stack,
     });
   }
 };
 
 exports.verifyEmail = async (req, res) => {
-  const { code } = req.body;
+  const { code, email } = req.body;
   try {
     const user = await User.findOne({
+      email,
       verificationToken: code,
       verificationTokenExpiresAt: { $gt: Date.now() },
     });
@@ -109,7 +109,6 @@ exports.verifyEmail = async (req, res) => {
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
-      stack: error.stack,
     });
   }
 };
@@ -162,7 +161,6 @@ exports.login = async (req, res) => {
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
-      stack: error.stack,
     });
   }
 };
@@ -214,7 +212,6 @@ exports.forgotPassword = async (req, res) => {
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
-      stack: error.stack,
     });
   }
 };
@@ -262,7 +259,6 @@ exports.resetPassword = async (req, res) => {
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
-      stack: error.stack,
     });
   }
 };
@@ -300,7 +296,6 @@ exports.checkAuth = async (req, res) => {
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
-      stack: error.stack,
     });
   }
 };
