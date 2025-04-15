@@ -70,6 +70,7 @@ exports.signup = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
   const { code, email } = req.body;
   try {
+    console.log("email-verification", email, code);
     const user = await User.findOne({
       email,
       verificationToken: code,
