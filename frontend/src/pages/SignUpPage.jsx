@@ -19,6 +19,7 @@ const SignUpPage = () => {
 
     try {
       await signup(email, password, name);
+      localStorage.setItem("mernAuthPendingVerificationEmail", email);
       navigate("/verify-email", { state: { email } });
     } catch (error) {
       console.log(error);

@@ -6,7 +6,10 @@ import toast from "react-hot-toast";
 
 const EmailVerificationPage = () => {
   const location = useLocation();
-  const email = location.state?.email;
+  const stateEmail = location.state?.email;
+  const localEmail = localStorage.getItem("mernAuthPendingVerificationEmail");
+  const email = stateEmail || localEmail;
+
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -59,10 +62,14 @@ const EmailVerificationPage = () => {
 
   // Auto submit when all fields are filled
   useEffect(() => {
+    if (!email) {
+      toast.error("No email found. Please sign up again.");
+      navigate("/signup");
+    }
     if (code.every((digit) => digit !== "")) {
       handleSubmit(new Event("submit"));
     }
-  }, [code]);
+  }, [code, email, navigate]);
 
   return (
     <div className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
