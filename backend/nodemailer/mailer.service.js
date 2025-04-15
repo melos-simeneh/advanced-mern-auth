@@ -38,9 +38,9 @@ exports.sendVerificationEmail = async (email, verificationToken) => {
   });
 };
 
-exports.sendWelcomeEmail = async (email, name) => {
+exports.sendWelcomeEmail = async (email, name, loginURL) => {
   const html = WELCOME_EMAIL_TEMPLATE.replace("{userName}", name)
-    .replace("{loginUrl}", "https://mern-auth.com/login")
+    .replace("{loginUrl}", loginURL)
     .replace("{supportUrl}", "https://melos-simeneh.vercel.app/");
   await sendEmail({
     to: email,

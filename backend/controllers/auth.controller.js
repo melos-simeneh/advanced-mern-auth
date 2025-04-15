@@ -88,7 +88,11 @@ exports.verifyEmail = async (req, res) => {
     user.verificationTokenExpiresAt = null;
     await user.save();
 
-    await sendWelcomeEmail(user.email, user.name);
+    await sendWelcomeEmail(
+      user.email,
+      user.name,
+      `${process.env.CLIENT_URL}/login`
+    );
     console.log(
       `[${timestamp()}][Info] ✅ ${email} User verified successfully}`
     );
