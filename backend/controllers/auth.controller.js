@@ -23,7 +23,7 @@ exports.signup = async (req, res) => {
     if (userAlreadyExists) {
       return res
         .status(400)
-        .json({ success: false, message: "User already exists" });
+        .json({ success: false, message: "Email already exists" });
     }
     const hashedPassword = await bcryptjs.hash(password, 10);
     const verificationCode = generateVerificationCode();
