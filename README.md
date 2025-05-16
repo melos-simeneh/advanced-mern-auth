@@ -128,7 +128,8 @@ npm run dev
 
 Frontend will be running at: [http://localhost:5173](http://localhost:5173)
 
-**⚙️ Other way to run the app**
+### ⚙️ Other way to run the app
+
 Local Development
 
 ```bash
@@ -163,13 +164,13 @@ This installs all dependencies in both frontend and backend and builds the React
 
 ## 🔒 API Endpoints
 
-**POST** `/api/auth/signup` – Create user
-**POST** `/api/auth/login` – Log in user
-**POST** `/api/auth/logout` – Log out user
-**POST** `/api/auth/verify-email` – Verify email
-**POST** `/api/auth/forgot-password` – Request password reset
-**POST** `/api/auth/reset-password/:token` – Reset password
-**GET** `/api/auth/check-auth` – Validate user session
+- **POST** `/api/auth/signup` – Create user
+- **POST** `/api/auth/login` – Log in user
+- **POST** `/api/auth/logout` – Log out user
+- **POST** `/api/auth/verify-email` – Verify email
+- **POST** `/api/auth/forgot-password` – Request password reset
+- **POST** `/api/auth/reset-password/:token` – Reset password
+- **GET** `/api/auth/check-auth` – Validate user session
 
 ## 📧 Contact
 
