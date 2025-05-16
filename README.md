@@ -46,7 +46,7 @@ A full-stack authentication system built with **MongoDB**, **Express**, **React*
 - React
 - React Router
 - Zustand (Global State)
-- TailwindCSS
+- TailwindCSS + daisy ui
 - React Hot Toast
 
 **Backend:**
