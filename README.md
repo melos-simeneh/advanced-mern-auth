@@ -175,4 +175,5 @@ This installs all dependencies in both frontend and backend and builds the React
 ## 📧 Contact
 
 Made with 💚 by **MELOS**
+
 📬 For issues, suggestions, or contributions, feel free to open an issue.
